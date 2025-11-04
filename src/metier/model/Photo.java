@@ -15,6 +15,5 @@ public class Photo {
 	private String chemin;
 	private Date datePrise;
 	private SourcePhoto source;
-	private Reparation reparation;
 	private Client client;
 }

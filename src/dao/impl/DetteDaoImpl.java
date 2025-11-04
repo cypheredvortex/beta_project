@@ -13,7 +13,7 @@ public class DetteDaoImpl implements DetteDao {
 
     @Override
     public Dette save(Dette dette) throws Exception {
-        String sql = "INSERT INTO dette (montant, donne_par, recu_par, date, reglee, caisse_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO dette (montant, donnePar, recuPar, date, reglee, caisse_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setDouble(1, dette.getMontant());
@@ -32,7 +32,7 @@ public class DetteDaoImpl implements DetteDao {
 
     @Override
     public Dette update(Dette dette) throws Exception {
-        String sql = "UPDATE dette SET montant=?, donne_par=?, recu_par=?, date=?, reglee=?, caisse_id=? WHERE id=?";
+        String sql = "UPDATE dette SET montant=?, donnePar=?, recuPar=?, date=?, reglee=?, caisse_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setDouble(1, dette.getMontant());
@@ -99,7 +99,7 @@ public class DetteDaoImpl implements DetteDao {
     @Override
     public List<Dette> findByDonnePar(String donnePar) throws Exception {
         List<Dette> list = new ArrayList<>();
-        String sql = "SELECT * FROM dette WHERE donne_par=?";
+        String sql = "SELECT * FROM dette WHERE donnePar=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, donnePar);
@@ -113,7 +113,7 @@ public class DetteDaoImpl implements DetteDao {
     @Override
     public List<Dette> findByRecuPar(String recuPar) throws Exception {
         List<Dette> list = new ArrayList<>();
-        String sql = "SELECT * FROM dette WHERE recu_par=?";
+        String sql = "SELECT * FROM dette WHERE recuPar=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, recuPar);
@@ -156,8 +156,8 @@ public class DetteDaoImpl implements DetteDao {
         Dette d = new Dette();
         d.setId(rs.getLong("id"));
         d.setMontant(rs.getDouble("montant"));
-        d.setDonnepar(rs.getString("donne_par"));
-        d.setRecuPar(rs.getString("recu_par"));
+        d.setDonnepar(rs.getString("donnePar"));
+        d.setRecuPar(rs.getString("recuPar"));
         d.setDate(rs.getDate("date"));
         d.setReglee(rs.getBoolean("reglee"));
         long caisseId = rs.getLong("caisse_id");

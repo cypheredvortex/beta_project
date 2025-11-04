@@ -15,7 +15,7 @@ public class CompteDaoImpl implements CompteDao {
 
     @Override
     public Compte save(Compte compte) throws Exception {
-        String sql = "INSERT INTO comptes (login, motDePasse, role, actif, reparateur_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO compte (login, motDePasse, role, actif, reparateur_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, compte.getLogin());
@@ -33,7 +33,7 @@ public class CompteDaoImpl implements CompteDao {
 
     @Override
     public Compte update(Compte compte) throws Exception {
-        String sql = "UPDATE comptes SET login=?, motDePasse=?, role=?, actif=?, reparateur_id=? WHERE id=?";
+        String sql = "UPDATE compte SET login=?, motDePasse=?, role=?, actif=?, reparateur_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, compte.getLogin());
@@ -49,7 +49,7 @@ public class CompteDaoImpl implements CompteDao {
 
     @Override
     public boolean deleteById(Long id) throws Exception {
-        String sql = "DELETE FROM comptes WHERE id=?";
+        String sql = "DELETE FROM compte WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -59,7 +59,7 @@ public class CompteDaoImpl implements CompteDao {
 
     @Override
     public Optional<Compte> findById(Long id) throws Exception {
-        String sql = "SELECT * FROM comptes WHERE id=?";
+        String sql = "SELECT * FROM compte WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -72,7 +72,7 @@ public class CompteDaoImpl implements CompteDao {
 
     @Override
     public Optional<Compte> findByLogin(String login) throws Exception {
-        String sql = "SELECT * FROM comptes WHERE login=?";
+        String sql = "SELECT * FROM compte WHERE login=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, login);
@@ -86,7 +86,7 @@ public class CompteDaoImpl implements CompteDao {
     @Override
     public List<Compte> findAll() throws Exception {
         List<Compte> list = new ArrayList<>();
-        String sql = "SELECT * FROM comptes";
+        String sql = "SELECT * FROM compte";
         try (Connection conn = DBConnection.getConnection();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
@@ -98,7 +98,7 @@ public class CompteDaoImpl implements CompteDao {
     @Override
     public List<Compte> findByRole(RoleCompte role) throws Exception {
         List<Compte> list = new ArrayList<>();
-        String sql = "SELECT * FROM comptes WHERE role=?";
+        String sql = "SELECT * FROM compte WHERE role=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, role != null ? role.name() : null);
@@ -112,7 +112,7 @@ public class CompteDaoImpl implements CompteDao {
     @Override
     public List<Compte> findByActif(boolean actif) throws Exception {
         List<Compte> list = new ArrayList<>();
-        String sql = "SELECT * FROM comptes WHERE actif=?";
+        String sql = "SELECT * FROM compte WHERE actif=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setBoolean(1, actif);
@@ -125,7 +125,7 @@ public class CompteDaoImpl implements CompteDao {
 
     @Override
     public Optional<Compte> findByReparateurId(Long reparateurId) throws Exception {
-        String sql = "SELECT * FROM comptes WHERE reparateur_id=?";
+        String sql = "SELECT * FROM compte WHERE reparateur_id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, reparateurId);

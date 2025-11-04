@@ -17,7 +17,7 @@ public class ReparationDaoImpl implements ReparationDao {
 
     @Override
     public Reparation save(Reparation r) throws Exception {
-        String sql = "INSERT INTO reparation (code_unique, date_creation, statut, description, prix_convenu, prix_total_pieces, remarques, client_id, client_phone, reparateur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO reparation (codeUnique, dateCreation, statut, description, prixConvenu, prixTotalPieces, remarques, client_id, clientPhone, reparateur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, r.getCodeUnique());
@@ -40,7 +40,7 @@ public class ReparationDaoImpl implements ReparationDao {
 
     @Override
     public Reparation update(Reparation r) throws Exception {
-        String sql = "UPDATE reparation SET code_unique=?, date_creation=?, statut=?, description=?, prix_convenu=?, prix_total_pieces=?, remarques=?, client_id=?, client_phone=?, reparateur_id=? WHERE id=?";
+        String sql = "UPDATE reparation SET codeUnique=?, dateCreation=?, statut=?, description=?, prixConvenu=?, prixTotalPieces=?, remarques=?, client_id=?, clientPhone=?, reparateur_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, r.getCodeUnique());
@@ -84,7 +84,7 @@ public class ReparationDaoImpl implements ReparationDao {
 
     @Override
     public Optional<Reparation> findByCodeUnique(String codeUnique) throws Exception {
-        String sql = "SELECT * FROM reparation WHERE code_unique=?";
+        String sql = "SELECT * FROM reparation WHERE codeUnique=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, codeUnique);
@@ -124,7 +124,7 @@ public class ReparationDaoImpl implements ReparationDao {
     @Override
     public List<Reparation> findByClientPhone(String phone) throws Exception {
         List<Reparation> list = new ArrayList<>();
-        String sql = "SELECT * FROM reparation WHERE client_phone=?";
+        String sql = "SELECT * FROM reparation WHERE clientPhone=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, phone);
@@ -152,7 +152,7 @@ public class ReparationDaoImpl implements ReparationDao {
     @Override
     public List<Reparation> findByDateCreation(Date date) throws Exception {
         List<Reparation> list = new ArrayList<>();
-        String sql = "SELECT * FROM reparation WHERE date_creation=?";
+        String sql = "SELECT * FROM reparation WHERE dateCreation=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setDate(1, new java.sql.Date(date.getTime()));
@@ -166,21 +166,21 @@ public class ReparationDaoImpl implements ReparationDao {
     private Reparation mapReparation(ResultSet rs) throws SQLException {
         Reparation r = new Reparation();
         r.setId(rs.getLong("id"));
-        r.setCodeUnique(rs.getString("code_unique"));
-        Timestamp ts = rs.getTimestamp("date_creation");
+        r.setCodeUnique(rs.getString("codeUnique"));
+        Timestamp ts = rs.getTimestamp("dateCreation");
         if (ts != null) r.setDateCreation(new Date(ts.getTime()));
         String statut = rs.getString("statut");
         if (statut != null) r.setStatut(EtatReparation.valueOf(statut));
         r.setDescription(rs.getString("description"));
-        r.setPrixConvenu(rs.getDouble("prix_convenu"));
-        r.setPrixTotalPieces(rs.getDouble("prix_total_pieces"));
+        r.setPrixConvenu(rs.getDouble("prixConvenu"));
+        r.setPrixTotalPieces(rs.getDouble("prixTotalPieces"));
         r.setRemarques(rs.getString("remarques"));
 
         long clientId = rs.getLong("client_id");
         if (!rs.wasNull()) {
             r.setClient(new Client());
             r.getClient().setId(clientId);
-            r.getClient().setTelephone(rs.getString("client_phone"));
+            r.getClient().setTelephone(rs.getString("clientPhone"));
         }
 
         long reparateurId = rs.getLong("reparateur_id");

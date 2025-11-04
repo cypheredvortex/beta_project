@@ -13,7 +13,7 @@ public class PieceDaoImpl implements PieceDao {
 
     @Override
     public Piece save(Piece piece) throws Exception {
-        String sql = "INSERT INTO piece (nom, prix_unitaire, etat_remplacement, appareil_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO piece (nom, prixUnitaire, etatRemplacement, appareil_id) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, piece.getNom());
@@ -30,7 +30,7 @@ public class PieceDaoImpl implements PieceDao {
 
     @Override
     public Piece update(Piece piece) throws Exception {
-        String sql = "UPDATE piece SET nom=?, prix_unitaire=?, etat_remplacement=?, appareil_id=? WHERE id=?";
+        String sql = "UPDATE piece SET nom=?, prixUnitaire=?, etatRemplacement=?, appareil_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, piece.getNom());
@@ -109,7 +109,7 @@ public class PieceDaoImpl implements PieceDao {
     @Override
     public List<Piece> findByEtatRemplacement(String etatRemplacement) throws Exception {
         List<Piece> list = new ArrayList<>();
-        String sql = "SELECT * FROM piece WHERE etat_remplacement=?";
+        String sql = "SELECT * FROM piece WHERE etatRemplacement=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, etatRemplacement);
@@ -124,8 +124,8 @@ public class PieceDaoImpl implements PieceDao {
         Piece p = new Piece();
         p.setId(rs.getLong("id"));
         p.setNom(rs.getString("nom"));
-        p.setPrixUnitaire(rs.getDouble("prix_unitaire"));
-        p.setEtatRemplacement(rs.getString("etat_remplacement"));
+        p.setPrixUnitaire(rs.getDouble("prixUnitaire"));
+        p.setEtatRemplacement(rs.getString("etatRemplacement"));
 
         long appareilId = rs.getLong("appareil_id");
         if (!rs.wasNull()) {

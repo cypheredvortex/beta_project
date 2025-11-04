@@ -16,15 +16,14 @@ public class PhotoDaoImpl implements PhotoDao {
 
     @Override
     public Photo save(Photo photo) throws Exception {
-        String sql = "INSERT INTO photo (chemin, date_prise, source, reparation_id, client_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO photo (chemin, datePrise, source, client_id) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, photo.getChemin());
             ps.setDate(2, photo.getDatePrise());
             ps.setString(3, photo.getSource() != null ? photo.getSource().name() : null);
-            ps.setObject(4, photo.getReparation() != null ? photo.getReparation().getId() : null);
-            ps.setObject(5, photo.getClient() != null ? photo.getClient().getId() : null);
+            ps.setObject(4, photo.getClient() != null ? photo.getClient().getId() : null);
 
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -49,21 +48,6 @@ public class PhotoDaoImpl implements PhotoDao {
     }
 
     @Override
-    public List<Photo> findByReparationId(Long reparationId) throws Exception {
-        List<Photo> list = new ArrayList<>();
-        String sql = "SELECT * FROM photo WHERE reparation_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setLong(1, reparationId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) list.add(mapPhoto(rs));
-            }
-        }
-        return list;
-    }
-
-    @Override
     public List<Photo> findByClientId(Long clientId) throws Exception {
         List<Photo> list = new ArrayList<>();
         String sql = "SELECT * FROM photo WHERE client_id = ?";
@@ -81,7 +65,7 @@ public class PhotoDaoImpl implements PhotoDao {
     @Override
     public List<Photo> findByDatePrise(Date datePrise) throws Exception {
         List<Photo> list = new ArrayList<>();
-        String sql = "SELECT * FROM photo WHERE date_prise = ?";
+        String sql = "SELECT * FROM photo WHERE datePrise = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -123,16 +107,15 @@ public class PhotoDaoImpl implements PhotoDao {
 
     @Override
     public Photo update(Photo photo) throws Exception {
-        String sql = "UPDATE photo SET chemin=?, date_prise=?, source=?, reparation_id=?, client_id=? WHERE id=?";
+        String sql = "UPDATE photo SET chemin=?, datePrise=?, source=?, client_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, photo.getChemin());
             ps.setDate(2, photo.getDatePrise());
             ps.setString(3, photo.getSource() != null ? photo.getSource().name() : null);
-            ps.setObject(4, photo.getReparation() != null ? photo.getReparation().getId() : null);
-            ps.setObject(5, photo.getClient() != null ? photo.getClient().getId() : null);
-            ps.setLong(6, photo.getId());
+            ps.setObject(4, photo.getClient() != null ? photo.getClient().getId() : null);
+            ps.setLong(5, photo.getId());
 
             ps.executeUpdate();
         }
@@ -154,16 +137,10 @@ public class PhotoDaoImpl implements PhotoDao {
         Photo photo = new Photo();
         photo.setId(rs.getLong("id"));
         photo.setChemin(rs.getString("chemin"));
-        photo.setDatePrise(rs.getDate("date_prise"));
+        photo.setDatePrise(rs.getDate("datePrise"));
 
         String source = rs.getString("source");
-        if (source != null) photo.setSource(SourcePhoto.valueOf(source));
-
-        long reparationId = rs.getLong("reparation_id");
-        if (!rs.wasNull()) {
-            photo.setReparation(new Reparation());
-            photo.getReparation().setId(reparationId);
-        }
+        if (source != null) photo.setSource(SourcePhoto.valueOf(source.toUpperCase()));
 
         long clientId = rs.getLong("client_id");
         if (!rs.wasNull()) {

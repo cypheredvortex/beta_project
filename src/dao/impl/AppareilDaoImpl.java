@@ -15,7 +15,7 @@ public class AppareilDaoImpl implements AppareilDao {
 
     @Override
     public Appareil save(Appareil appareil) throws Exception {
-        String sql = "INSERT INTO appareils (type, marque, modele, numero_serie, probleme, type_probleme, reparation_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO appareil (type, marque, modele, numeroSerie, probleme, typeProbleme, reparation_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, appareil.getType());
@@ -35,7 +35,7 @@ public class AppareilDaoImpl implements AppareilDao {
 
     @Override
     public Appareil update(Appareil appareil) throws Exception {
-        String sql = "UPDATE appareils SET type=?, marque=?, modele=?, numero_serie=?, probleme=?, type_probleme=?, reparation_id=? WHERE id=?";
+        String sql = "UPDATE appareil SET type=?, marque=?, modele=?, numeroSerie=?, probleme=?, typeProbleme=?, reparation_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, appareil.getType());
@@ -53,7 +53,7 @@ public class AppareilDaoImpl implements AppareilDao {
 
     @Override
     public boolean deleteById(Long id) throws Exception {
-        String sql = "DELETE FROM appareils WHERE id=?";
+        String sql = "DELETE FROM appareil WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -63,7 +63,7 @@ public class AppareilDaoImpl implements AppareilDao {
 
     @Override
     public Optional<Appareil> findById(Long id) throws Exception {
-        String sql = "SELECT * FROM appareils WHERE id=?";
+        String sql = "SELECT * FROM appareil WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -76,7 +76,7 @@ public class AppareilDaoImpl implements AppareilDao {
 
     @Override
     public Optional<Appareil> findByNumeroSerie(String numeroSerie) throws Exception {
-        String sql = "SELECT * FROM appareils WHERE numero_serie=?";
+        String sql = "SELECT * FROM appareil WHERE numeroSerie=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, numeroSerie);
@@ -89,7 +89,7 @@ public class AppareilDaoImpl implements AppareilDao {
 
     @Override
     public List<Appareil> findByType(String type) throws Exception {
-        String sql = "SELECT * FROM appareils WHERE type=?";
+        String sql = "SELECT * FROM appareil WHERE type=?";
         List<Appareil> list = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -103,7 +103,7 @@ public class AppareilDaoImpl implements AppareilDao {
 
     @Override
     public List<Appareil> findAll() throws Exception {
-        String sql = "SELECT * FROM appareils";
+        String sql = "SELECT * FROM appareil";
         List<Appareil> list = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
              Statement st = conn.createStatement();
@@ -115,7 +115,7 @@ public class AppareilDaoImpl implements AppareilDao {
 
     @Override
     public List<Appareil> findByReparationId(Long reparationId) throws Exception {
-        String sql = "SELECT * FROM appareils WHERE reparation_id=?";
+        String sql = "SELECT * FROM appareil WHERE reparation_id=?";
         List<Appareil> list = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -133,15 +133,19 @@ public class AppareilDaoImpl implements AppareilDao {
         a.setType(rs.getString("type"));
         a.setMarque(rs.getString("marque"));
         a.setModele(rs.getString("modele"));
-        a.setNumeroSerie(rs.getString("numero_serie"));
+        a.setNumeroSerie(rs.getString("numeroSerie")); // fixed camelCase
         a.setProbleme(rs.getString("probleme"));
 
-        String tp = rs.getString("type_probleme");
+        String tp = rs.getString("typeProbleme"); // already camelCase
         if (tp != null) {
-            try { a.setTypeProbleme(TypeProbleme.valueOf(tp)); } catch (Exception e) {}
+            try { 
+                a.setTypeProbleme(TypeProbleme.valueOf(tp)); 
+            } catch (Exception e) {
+                // optionally log or handle unknown TypeProbleme
+            }
         }
 
-        long repId = rs.getLong("reparation_id");
+        long repId = rs.getLong("reparation_id"); // remains the same
         if (!rs.wasNull()) {
             Reparation r = new Reparation();
             r.setId(repId);
@@ -150,4 +154,5 @@ public class AppareilDaoImpl implements AppareilDao {
 
         return a;
     }
+
 }

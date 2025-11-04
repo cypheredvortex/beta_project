@@ -9,7 +9,6 @@ import metier.model.Photo;
 public interface PhotoDao {
     Photo save(Photo photo) throws Exception;
     Optional<Photo> findById(Long id) throws Exception;
-    List<Photo> findByReparationId(Long reparationId) throws Exception;
     List<Photo> findAll() throws Exception;
     Photo update(Photo photo) throws Exception;
     boolean deleteById(Long id) throws Exception;

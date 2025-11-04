@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Proprietaire extends Reparateur {
 	private long id;
+	private double pourcentageReparation;
 	private List<Boutique> boutiques=new ArrayList<Boutique>();
 }

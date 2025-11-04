@@ -15,7 +15,7 @@ public class CaisseDaoImpl implements CaisseDao {
 
     @Override
     public Caisse save(Caisse caisse) throws Exception {
-        String sql = "INSERT INTO caisse (solde_actuel, type, reparateur_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO caisse (soldeActuel, type, reparateur_id) VALUES (?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setDouble(1, caisse.getSoldeActuel());
@@ -31,7 +31,7 @@ public class CaisseDaoImpl implements CaisseDao {
 
     @Override
     public Caisse update(Caisse caisse) throws Exception {
-        String sql = "UPDATE caisse SET solde_actuel=?, type=?, reparateur_id=? WHERE id=?";
+        String sql = "UPDATE caisse SET soldeActuel=?, type=?, reparateur_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setDouble(1, caisse.getSoldeActuel());
@@ -108,7 +108,7 @@ public class CaisseDaoImpl implements CaisseDao {
     private Caisse mapCaisse(ResultSet rs) throws SQLException {
         Caisse c = new Caisse();
         c.setId(rs.getLong("id"));
-        c.setSoldeActuel(rs.getDouble("solde_actuel"));
+        c.setSoldeActuel(rs.getDouble("soldeActuel"));
         String typeStr = rs.getString("type");
         if (typeStr != null) {
             try {

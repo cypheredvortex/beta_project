@@ -13,7 +13,7 @@ public class BoutiqueDaoImpl implements BoutiqueDao {
 
     @Override
     public Boutique save(Boutique boutique) throws Exception {
-        String sql = "INSERT INTO boutique (nom, addresse, logo_path, num_patente, proprietaire_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO boutique (nom, addresse, logoPath, numPatente, proprietaire_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -76,7 +76,7 @@ public class BoutiqueDaoImpl implements BoutiqueDao {
 
     @Override
     public Boutique update(Boutique boutique) throws Exception {
-        String sql = "UPDATE boutique SET nom=?, addresse=?, logo_path=?, num_patente=?, proprietaire_id=? WHERE id=?";
+        String sql = "UPDATE boutique SET nom=?, addresse=?, logoPath=?, numPatente=?, proprietaire_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -108,8 +108,8 @@ public class BoutiqueDaoImpl implements BoutiqueDao {
         b.setId(rs.getLong("id"));
         b.setNom(rs.getString("nom"));
         b.setAddresse(rs.getString("addresse"));
-        b.setLogoPath(rs.getString("logo_path"));
-        b.setNumPatente(rs.getString("num_patente"));
+        b.setLogoPath(rs.getString("logoPath"));
+        b.setNumPatente(rs.getString("numPatente"));
 
         long proprietaireId = rs.getLong("proprietaire_id");
         if (!rs.wasNull()) {

@@ -14,7 +14,7 @@ public class SessionDaoImpl implements SessionDao {
 
     @Override
     public Session save(Session session) throws Exception {
-        String sql = "INSERT INTO session (token, date_creation, date_expiration, compte_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO session (token, dateCreation, dateExpiration, compte_id) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -89,7 +89,7 @@ public class SessionDaoImpl implements SessionDao {
 
     @Override
     public Session update(Session session) throws Exception {
-        String sql = "UPDATE session SET token=?, date_creation=?, date_expiration=?, compte_id=? WHERE id=?";
+        String sql = "UPDATE session SET token=?, dateCreation=?, dateExpiration=?, compte_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -119,8 +119,8 @@ public class SessionDaoImpl implements SessionDao {
         Session session = new Session();
         session.setId(rs.getLong("id"));
         session.setToken(rs.getString("token"));
-        session.setDateCreation(rs.getDate("date_creation"));
-        session.setDateExpiration(rs.getDate("date_expiration"));
+        session.setDateCreation(rs.getDate("dateCreation"));
+        session.setDateExpiration(rs.getDate("dateExpiration"));
 
         long compteId = rs.getLong("compte_id");
         if (!rs.wasNull()) {

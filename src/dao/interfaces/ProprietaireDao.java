@@ -13,5 +13,4 @@ public interface ProprietaireDao {
     boolean deleteById(Long id) throws Exception;
     Optional<Proprietaire> findByEmail(String email) throws Exception;
     Optional<Proprietaire> findByTelephone(String telephone) throws Exception;
-    List<Proprietaire> findByBoutiqueId(Long boutiqueId) throws Exception;
 }
