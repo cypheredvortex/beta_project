@@ -30,9 +30,29 @@ public class ReparationServiceImpl implements IReparationService {
         if (reparation.getDescription() == null || reparation.getDescription().isEmpty())
             throw new IllegalArgumentException("La description est obligatoire !");
         if (reparation.getStatut() == null)
-            reparation.setStatut(EtatReparation.EN_ATTENTE);
+            reparation.setStatut(EtatReparation.EN_COURS);
+
+        // ✅ Date automatique
+        if (reparation.getDateCreation() == null)
+            reparation.setDateCreation(new Date());
+
+        // ✅ Génération automatique du code unique
+        if (reparation.getCodeUnique() == null || reparation.getCodeUnique().isEmpty()) {
+            String code = genererCodeUnique();
+            reparation.setCodeUnique(code);
+        }
 
         return reparationDao.save(reparation);
+    }
+
+    /**
+     * 🔧 Génère un code unique de la forme REP-2025-00001
+     */
+    private String genererCodeUnique() {
+        String prefix = "REP";
+        String annee = String.valueOf(java.time.Year.now().getValue());
+        int random = (int) (Math.random() * 99999);
+        return String.format("%s-%s-%05d", prefix, annee, random);
     }
 
     // =========================================================

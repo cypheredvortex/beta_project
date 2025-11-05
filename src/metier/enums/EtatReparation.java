@@ -1,8 +1,9 @@
 package metier.enums;
 
 public enum EtatReparation {
-    EN_ATTENTE,
+    LIVRE,
     EN_COURS,
     TERMINE,
     ANNULE,
+    BLOQUE,
 }
