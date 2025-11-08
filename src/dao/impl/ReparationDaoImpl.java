@@ -17,7 +17,7 @@ public class ReparationDaoImpl implements ReparationDao {
 
     @Override
     public Reparation save(Reparation r) throws Exception {
-        String sql = "INSERT INTO reparation (codeUnique, dateCreation, statut, description, prixConvenu, prixTotalPieces, remarques, client_id, clientPhone, reparateur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO reparation (codeUnique, dateCreation, statut, description, prixConvenu, prixTotalPieces, remarques, client_id, reparateur_id) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, r.getCodeUnique());
@@ -28,8 +28,7 @@ public class ReparationDaoImpl implements ReparationDao {
             ps.setDouble(6, r.getPrixTotalPieces());
             ps.setString(7, r.getRemarques());
             ps.setObject(8, r.getClient() != null ? r.getClient().getId() : null);
-            ps.setString(9, r.getClient() != null ? r.getClient().getTelephone() : null);
-            ps.setObject(10, r.getReparateur() != null ? r.getReparateur().getId() : null);
+            ps.setObject(9, r.getReparateur() != null ? r.getReparateur().getId() : null);
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) r.setId(keys.getLong(1));
@@ -40,7 +39,7 @@ public class ReparationDaoImpl implements ReparationDao {
 
     @Override
     public Reparation update(Reparation r) throws Exception {
-        String sql = "UPDATE reparation SET codeUnique=?, dateCreation=?, statut=?, description=?, prixConvenu=?, prixTotalPieces=?, remarques=?, client_id=?, clientPhone=?, reparateur_id=? WHERE id=?";
+        String sql = "UPDATE reparation SET codeUnique=?, dateCreation=?, statut=?, description=?, prixConvenu=?, prixTotalPieces=?, remarques=?, client_id=?, reparateur_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, r.getCodeUnique());
@@ -51,9 +50,8 @@ public class ReparationDaoImpl implements ReparationDao {
             ps.setDouble(6, r.getPrixTotalPieces());
             ps.setString(7, r.getRemarques());
             ps.setObject(8, r.getClient() != null ? r.getClient().getId() : null);
-            ps.setString(9, r.getClient() != null ? r.getClient().getTelephone() : null);
-            ps.setObject(10, r.getReparateur() != null ? r.getReparateur().getId() : null);
-            ps.setLong(11, r.getId());
+            ps.setObject(9, r.getReparateur() != null ? r.getReparateur().getId() : null);
+            ps.setLong(10, r.getId());
             ps.executeUpdate();
         }
         return r;
@@ -121,19 +119,7 @@ public class ReparationDaoImpl implements ReparationDao {
         return list;
     }
 
-    @Override
-    public List<Reparation> findByClientPhone(String phone) throws Exception {
-        List<Reparation> list = new ArrayList<>();
-        String sql = "SELECT * FROM reparation WHERE clientPhone=?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, phone);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) list.add(mapReparation(rs));
-            }
-        }
-        return list;
-    }
+
 
     @Override
     public List<Reparation> findByStatut(EtatReparation statut) throws Exception {
@@ -180,7 +166,6 @@ public class ReparationDaoImpl implements ReparationDao {
         if (!rs.wasNull()) {
             r.setClient(new Client());
             r.getClient().setId(clientId);
-            r.getClient().setTelephone(rs.getString("clientPhone"));
         }
 
         long reparateurId = rs.getLong("reparateur_id");

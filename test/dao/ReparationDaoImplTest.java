@@ -80,23 +80,20 @@ public class ReparationDaoImplTest {
             Optional<Reparation> byCode = dao.findByCodeUnique(saved.getCodeUnique());
             byCode.ifPresent(rep -> System.out.println("Found by code: " + rep.getCodeUnique()));
 
-            System.out.println("\n=== TEST 6: FIND BY CLIENT PHONE ===");
-            List<Reparation> byPhone = dao.findByClientPhone(client.getTelephone());
-            byPhone.forEach(rep -> System.out.println("Reparation by client phone: " + rep.getCodeUnique()));
-
-            System.out.println("\n=== TEST 7: FIND BY STATUT ===");
+            
+            System.out.println("\n=== TEST 6: FIND BY STATUT ===");
             List<Reparation> byStatut = dao.findByStatut(EtatReparation.TERMINE);
             byStatut.forEach(rep -> System.out.println("Reparation by statut: " + rep.getCodeUnique() + " | Statut: " + rep.getStatut()));
 
-            System.out.println("\n=== TEST 8: FIND BY REPARATEUR ID ===");
+            System.out.println("\n=== TEST 7: FIND BY REPARATEUR ID ===");
             List<Reparation> byReparateur = dao.findByReparateurId(reparateur.getId());
             byReparateur.forEach(rep -> System.out.println("Reparation by reparateur: " + rep.getCodeUnique()));
 
-            System.out.println("\n=== TEST 9: FIND ALL ===");
+            System.out.println("\n=== TEST 8: FIND ALL ===");
             List<Reparation> all = dao.findAll();
             all.forEach(rep -> System.out.println("Reparation: " + rep.getCodeUnique() + " | Statut: " + rep.getStatut()));
 
-            System.out.println("\n=== TEST 10: DELETE ===");
+            System.out.println("\n=== TEST 9: DELETE ===");
             boolean deleted = dao.deleteById(saved.getId());
             System.out.println("Deleted reparation: " + deleted);
 

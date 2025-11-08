@@ -6,7 +6,7 @@ import metier.model.Reparation;
 import metier.enums.EtatReparation;
 import metier.servicesImpl.ReparationServiceImpl;
 
-public class TestReparationService {
+public class ReparationServiceImplTest {
 
 	public static void main(String[] args) {
 		try {

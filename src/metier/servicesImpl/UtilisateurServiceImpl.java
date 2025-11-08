@@ -55,7 +55,7 @@ public class UtilisateurServiceImpl implements IUtilisateurService {
             throw new IllegalArgumentException("Le mot de passe est obligatoire !");
         }
         if (compte.getRole() == null) {
-            compte.setRole(RoleCompte.REPARATEUR); // valeur par défaut
+            compte.setRole(RoleCompte.reparateur); // valeur par défaut
         }
         compte.setActif(true);
 

@@ -19,7 +19,6 @@ public interface IReparationService {
     // Recherches spécifiques
     Optional<Reparation> trouverParCodeUnique(String codeUnique) throws Exception;
     List<Reparation> listerParReparateur(Long reparateurId) throws Exception;
-    List<Reparation> listerParClientPhone(String phone) throws Exception;
     List<Reparation> listerParStatut(EtatReparation statut) throws Exception;
     List<Reparation> listerParDate(Date date) throws Exception;
 

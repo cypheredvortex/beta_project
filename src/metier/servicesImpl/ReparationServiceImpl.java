@@ -113,15 +113,7 @@ public class ReparationServiceImpl implements IReparationService {
         return reparationDao.findByReparateurId(reparateurId);
     }
 
-    // =========================================================
-    // 🔹 Lister par téléphone du client
-    // =========================================================
-    @Override
-    public List<Reparation> listerParClientPhone(String phone) throws Exception {
-        if (phone == null || phone.isEmpty())
-            throw new IllegalArgumentException("Le numéro de téléphone est obligatoire !");
-        return reparationDao.findByClientPhone(phone);
-    }
+
 
     // =========================================================
     // 🔹 Lister par statut

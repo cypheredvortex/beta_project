@@ -13,7 +13,6 @@ public interface ReparationDao {
     Optional<Reparation> findByCodeUnique(String codeUnique) throws Exception;
     List<Reparation> findAll() throws Exception;
     List<Reparation> findByReparateurId(Long reparateurId) throws Exception;
-    List<Reparation> findByClientPhone(String phone) throws Exception;
     List<Reparation> findByStatut(EtatReparation statut) throws Exception;
     List<Reparation> findByDateCreation(Date date) throws Exception;
     Reparation update(Reparation reparation) throws Exception;

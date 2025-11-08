@@ -17,7 +17,7 @@ public class CompteDaoImplTest {
             Compte compte = new Compte();
             compte.setLogin("adminTest");
             compte.setMotDePasse("password123");
-            compte.setRole(RoleCompte.PROPRIETAIRE);
+            compte.setRole(RoleCompte.proprietaire);
             compte.setActif(true);
 
             // Optional: associate with a Reparateur
@@ -49,7 +49,7 @@ public class CompteDaoImplTest {
 
             // 5️⃣ Test findByRole
             System.out.println("\n=== TEST 5: FIND BY ROLE ===");
-            List<Compte> admins = dao.findByRole(RoleCompte.REPARATEUR);
+            List<Compte> admins = dao.findByRole(RoleCompte.reparateur);
             admins.forEach(c -> System.out.println("Admin compte ID=" + c.getId() + ", login=" + c.getLogin()));
 
             // 6️⃣ Test findByActif
