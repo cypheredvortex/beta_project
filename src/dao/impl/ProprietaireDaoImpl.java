@@ -20,17 +20,20 @@ public class ProprietaireDaoImpl implements ProprietaireDao {
             conn.setAutoCommit(false);
 
             // Insert into reparateur table first
-            String sqlReparateur = "INSERT INTO reparateur (compte_id, boutique_id, caisse_id, nom, prenom, email, telephone, salairePourcentage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement psR = conn.prepareStatement(sqlReparateur, Statement.RETURN_GENERATED_KEYS);
-            psR.setObject(1, p.getCompte()); // assuming you have compte_id in Proprietaire object
-            psR.setObject(2, p.getBoutique()); // assuming default/main boutique
-            psR.setObject(3, null); // caisse_id can be null
-            psR.setString(4, p.getNom());
-            psR.setString(5, p.getPrenom());
-            psR.setString(6, p.getEmail());
-            psR.setString(7, p.getTelephone());
-            psR.setDouble(8, p.getSalairePourcentage());
-            psR.executeUpdate();
+            String sqlReparateur = "INSERT INTO reparateur " +
+            	    "(compte_id, boutique_id, caisse_id, nom, prenom, email, telephone, salairePourcentage) " +
+            	    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            	PreparedStatement psR = conn.prepareStatement(sqlReparateur, Statement.RETURN_GENERATED_KEYS);
+            	psR.setObject(1, p.getCompte() != null ? p.getCompte().getId() : null);
+            	psR.setObject(2, p.getBoutique() != null ? p.getBoutique().getId() : null);
+            	psR.setObject(3, null); // caisse_id
+            	psR.setString(4, p.getNom());
+            	psR.setString(5, p.getPrenom());
+            	psR.setString(6, p.getEmail());
+            	psR.setString(7, p.getTelephone());
+            	psR.setDouble(8, p.getSalairePourcentage());
+            	psR.executeUpdate();
+
 
             ResultSet rs = psR.getGeneratedKeys();
             if (rs.next()) {
