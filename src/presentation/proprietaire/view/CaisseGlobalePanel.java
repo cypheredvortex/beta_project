@@ -6,11 +6,10 @@ import presentation.proprietaire.model.CaisseTableModel;
 
 public class CaisseGlobalePanel extends JPanel {
     private final JTable table;
-    private final JButton btnAjouterEntree;
-    private final JButton btnAjouterSortie;
-    private final JButton btnSupprimer;
     private final JButton btnRafraichir;
-    private final JLabel lblSolde;
+    private final JButton btnSupprimer;
+    private final JButton btnVoirDettes;
+    private final JButton btnVoirTransactions;
 
     public CaisseGlobalePanel(CaisseTableModel model) {
         setLayout(new BorderLayout(10, 10));
@@ -24,38 +23,33 @@ public class CaisseGlobalePanel extends JPanel {
 
         // === BUTTONS ===
         btnRafraichir = new JButton("Rafraîchir");
-        btnAjouterEntree = new JButton("+ Entrée");
-        btnAjouterSortie = new JButton("- Sortie");
         btnSupprimer = new JButton("Supprimer");
+        btnVoirDettes = new JButton("Voir Dettes");
+        btnVoirTransactions = new JButton("Voir Transactions");
 
         styleButton(btnRafraichir, new Color(52, 152, 219));
-        styleButton(btnAjouterEntree, new Color(46, 204, 113));
-        styleButton(btnAjouterSortie, new Color(231, 76, 60));
         styleButton(btnSupprimer, new Color(155, 89, 182));
+        styleButton(btnVoirDettes, new Color(230, 126, 34));
+        styleButton(btnVoirTransactions, new Color(46, 204, 113));
 
-        // Toolbar
+        // === TOOLBAR ===
         JToolBar tb = new JToolBar();
         tb.setFloatable(false);
         tb.setBackground(Color.WHITE);
         tb.add(btnRafraichir);
         tb.addSeparator();
-        tb.add(btnAjouterEntree);
-        tb.add(btnAjouterSortie);
+        tb.add(btnVoirDettes);
+        tb.add(btnVoirTransactions);
         tb.addSeparator();
         tb.add(btnSupprimer);
 
         // === HEADER ===
-        lblSolde = new JLabel("Solde: 0.00");
-        lblSolde.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        lblSolde.setForeground(new Color(44, 62, 80));
-
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Color.WHITE);
         header.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        header.add(lblSolde, BorderLayout.WEST);
         header.add(tb, BorderLayout.EAST);
 
-        // === WRAPPER ===
+        // === CONTENT ===
         JPanel content = new JPanel(new BorderLayout());
         content.setBorder(BorderFactory.createTitledBorder("Caisse Globale"));
         content.setBackground(Color.WHITE);
@@ -88,9 +82,8 @@ public class CaisseGlobalePanel extends JPanel {
 
     // ===== GETTERS =====
     public JTable getTable() { return table; }
-    public JButton getBtnAjouterEntree() { return btnAjouterEntree; }
-    public JButton getBtnAjouterSortie() { return btnAjouterSortie; }
-    public JButton getBtnSupprimer() { return btnSupprimer; }
     public JButton getBtnRafraichir() { return btnRafraichir; }
-    public JLabel getLblSolde() { return lblSolde; }
+    public JButton getBtnSupprimer() { return btnSupprimer; }
+    public JButton getBtnVoirDettes() { return btnVoirDettes; }
+    public JButton getBtnVoirTransactions() { return btnVoirTransactions; }
 }

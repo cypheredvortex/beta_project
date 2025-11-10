@@ -8,7 +8,7 @@ import java.util.List;
 
 public class BoutiqueTableModel extends AbstractTableModel {
 
-    private final String[] columns = {"ID", "Nom", "Adresse", "Num Patente", "Propriétaire"};
+    private final String[] columns = {"ID", "Nom", "Adresse", "Logo", "Num Patente"};
     private final List<Boutique> rows = new ArrayList<>();
 
     @Override
@@ -33,8 +33,8 @@ public class BoutiqueTableModel extends AbstractTableModel {
             case 0 -> b.getId();
             case 1 -> b.getNom();
             case 2 -> b.getAddresse();
-            case 3 -> b.getNumPatente();
-            case 4 -> b.getProprietaire() != null ? b.getProprietaire().getNom() : "—";
+            case 3 -> b.getLogoPath();
+            case 4 -> b.getNumPatente();
             default -> "";
         };
     }

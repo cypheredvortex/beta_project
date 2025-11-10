@@ -1,12 +1,14 @@
 package presentation.proprietaire.controller;
 
+import metier.model.Client;
+import metier.model.Reparateur;
 import metier.model.Reparation;
-import metier.enums.EtatReparation;
 import metier.services.IReparationService;
 import presentation.proprietaire.model.ReparationTableModel;
 import presentation.proprietaire.view.ListeReparationsPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 public class ListeReparationsController {
@@ -25,9 +27,10 @@ public class ListeReparationsController {
 
     private void wire() {
         view.getBtnRafraichir().addActionListener(e -> load());
-        view.getBtnAjouter().addActionListener(e -> ajouter());
-        view.getBtnChangerEtat().addActionListener(e -> changeEtat());
         view.getBtnVoirCode().addActionListener(e -> showCode());
+        view.getBtnVoirAppareils().addActionListener(e -> voirAppareils());
+        view.getBtnVoirClient().addActionListener(e -> voirClient());
+        view.getBtnVoirReparateur().addActionListener(e -> voirReparateur());
     }
 
     private void load() {
@@ -39,51 +42,82 @@ public class ListeReparationsController {
         }
     }
 
-    private void changeEtat() {
-        int row = view.getTable().getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(view, "Sélectionnez une réparation."); return; }
-        Reparation r = model.getAt(row);
-        EtatReparation etat = (EtatReparation) JOptionPane.showInputDialog(
-                view,
-                "Choisir un nouvel état",
-                "Changer état",
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                EtatReparation.values(),
-                r.getStatut()
-        );
-        if (etat != null) {
-            try {
-                service.changerStatut(r.getId(), etat);
-                load();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(view, "Erreur: " + ex.getMessage());
-            }
-        }
-    }
-
-    private void ajouter() {
-        // Using standard JOptionPane input for demo (replace with a real form if needed)
-        String description = JOptionPane.showInputDialog(view, "Description de la réparation:");
-        if (description == null || description.isEmpty()) return;
-
-        Reparation form = new Reparation();
-        form.setDescription(description);
-
-        try {
-            Reparation created = service.enregistrerReparation(form);
-            load();
-            JOptionPane.showMessageDialog(view, "Réparation créée. Code: " + created.getCodeUnique());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(view, "Erreur création: " + e.getMessage());
-        }
-    }
-
     private void showCode() {
         int row = view.getTable().getSelectedRow();
         if (row < 0) { JOptionPane.showMessageDialog(view, "Sélectionnez une réparation."); return; }
         Reparation r = model.getAt(row);
-        String code = r.getCodeUnique();
-        JOptionPane.showMessageDialog(view, "Code unique: " + (code == null ? "(non défini)" : code));
+        JOptionPane.showMessageDialog(view, "Code unique: " + (r.getCodeUnique() == null ? "(non défini)" : r.getCodeUnique()));
+    }
+
+    private void voirAppareils() {
+        int row = view.getTable().getSelectedRow();
+        if (row < 0) { JOptionPane.showMessageDialog(view, "Sélectionnez une réparation."); return; }
+        Reparation r = model.getAt(row);
+
+        if (r.getAppareils() == null || r.getAppareils().isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Aucun appareil associé à cette réparation.");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < r.getAppareils().size(); i++) {
+            var a = r.getAppareils().get(i);
+            sb.append("Appareil ").append(i + 1).append(":\n")
+              .append("Marque/Modèle: ").append(a.getMarque()).append(" ").append(a.getModele()).append("\n")
+              .append("Type: ").append(a.getType()).append("\n")
+              .append("N° Série: ").append(a.getNumeroSerie()).append("\n")
+              .append("Problème: ").append(a.getProbleme()).append("\n")
+              .append("Type Problème: ").append(a.getTypeProbleme()).append("\n")
+              .append("--------------------------\n");
+        }
+
+        JTextArea textArea = new JTextArea(sb.toString());
+        textArea.setEditable(false);
+        JScrollPane scroll = new JScrollPane(textArea);
+        scroll.setPreferredSize(new Dimension(400, 300));
+
+        JOptionPane.showMessageDialog(view, scroll, "Appareils de la réparation", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void voirClient() {
+        int row = view.getTable().getSelectedRow();
+        if (row < 0) { JOptionPane.showMessageDialog(view, "Sélectionnez une réparation."); return; }
+        Client c = model.getAt(row).getClient();
+        if (c == null) { JOptionPane.showMessageDialog(view, "Aucun client associé."); return; }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Nom: ").append(c.getNom()).append("\n")
+          .append("Prénom: ").append(c.getPrenom()).append("\n")
+          .append("Email: ").append(c.getEmail()).append("\n")
+          .append("Téléphone: ").append(c.getTelephone()).append("\n");
+
+        JTextArea textArea = new JTextArea(sb.toString());
+        textArea.setEditable(false);
+        JScrollPane scroll = new JScrollPane(textArea);
+        scroll.setPreferredSize(new Dimension(400, 250));
+
+        JOptionPane.showMessageDialog(view, scroll, "Détails du client", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void voirReparateur() {
+        int row = view.getTable().getSelectedRow();
+        if (row < 0) { JOptionPane.showMessageDialog(view, "Sélectionnez une réparation."); return; }
+        Reparateur r = model.getAt(row).getReparateur();
+        if (r == null) { JOptionPane.showMessageDialog(view, "Aucun réparateur associé."); return; }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Nom: ").append(r.getNom()).append("\n")
+          .append("Prénom: ").append(r.getPrenom()).append("\n")
+          .append("Email: ").append(r.getEmail()).append("\n")
+          .append("Téléphone: ").append(r.getTelephone()).append("\n")
+          .append("Salaire pourcentage: ").append(r.getSalairePourcentage()).append("\n")
+          .append("Boutique: ").append(r.getBoutique() != null ? r.getBoutique().getNom() : "N/A").append("\n");
+
+        JTextArea textArea = new JTextArea(sb.toString());
+        textArea.setEditable(false);
+        JScrollPane scroll = new JScrollPane(textArea);
+        scroll.setPreferredSize(new Dimension(400, 250));
+
+        JOptionPane.showMessageDialog(view, scroll, "Détails du réparateur", JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -144,11 +144,21 @@ public class ReparateurDaoImpl implements ReparateurDao {
 
         long boutiqueId = rs.getLong("boutique_id");
         if (!rs.wasNull()) {
-            Boutique b = new Boutique();
-            b.setId(boutiqueId);
-            r.setBoutique(b);
+            // Fetch full boutique details
+            try {
+                BoutiqueDaoImpl boutiqueDao = new BoutiqueDaoImpl();
+                Boutique b = boutiqueDao.findById((int) boutiqueId).orElse(null);
+                r.setBoutique(b);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // fallback: only set ID
+                Boutique b = new Boutique();
+                b.setId(boutiqueId);
+                r.setBoutique(b);
+            }
         }
 
         return r;
     }
+
 }

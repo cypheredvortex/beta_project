@@ -1,19 +1,27 @@
 package presentation.proprietaire.model;
 
 import javax.swing.table.AbstractTableModel;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import metier.model.Transaction;
+import metier.model.Caisse;
 
 public class CaisseTableModel extends AbstractTableModel {
-    private final String[] columns = {"ID", "Date", "Type", "Montant", "Description", "Contrepartie"};
-    private final List<Transaction> rows = new ArrayList<>();
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private final String[] columns = {"ID", "Solde", "Type", "Réparateur"};
+    private List<Caisse> data = new ArrayList<>();
+
+    public void setData(List<Caisse> caisses) {
+        this.data = caisses;
+        fireTableDataChanged();
+    }
+
+    public Caisse getAt(int row) {
+        return data.get(row);
+    }
 
     @Override
     public int getRowCount() {
-        return rows.size();
+        return data.size();
     }
 
     @Override
@@ -22,31 +30,19 @@ public class CaisseTableModel extends AbstractTableModel {
     }
 
     @Override
-    public String getColumnName(int column) {
-        return columns[column];
+    public String getColumnName(int col) {
+        return columns[col];
     }
 
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        Transaction t = rows.get(rowIndex);
-        return switch (columnIndex) {
-            case 0 -> t.getId();
-            case 1 -> t.getDate() == null ? "" : sdf.format(t.getDate());
-            case 2 -> t.getType() == null ? "" : t.getType().name();
-            case 3 -> t.getMontant();
-            case 4 -> t.getDescription();
-            case 5 -> t.getContrepartie();
-            default -> "";
-        };
-    }
-
-    public void setData(List<Transaction> data) {
-        rows.clear();
-        if (data != null) rows.addAll(data);
-        fireTableDataChanged();
-    }
-
-    public Transaction getAt(int row) {
-        return rows.get(row);
+    public Object getValueAt(int row, int col) {
+        Caisse c = data.get(row);
+        switch (col) {
+            case 0: return c.getId();
+            case 1: return c.getSoldeActuel();
+            case 2: return c.getType() != null ? c.getType().name() : "";
+            case 3: return c.getReparateur() != null ? c.getReparateur().getNom() : "";
+            default: return "";
+        }
     }
 }

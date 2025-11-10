@@ -6,7 +6,7 @@ import java.util.List;
 import metier.model.Reparateur;
 
 public class ReparateurTableModel extends AbstractTableModel {
-    private final String[] columns = {"ID", "Nom", "Prénom", "Téléphone", "Email", "Salaire %", "Boutique", "Login"};
+    private final String[] columns = {"ID", "Nom", "Prénom", "Téléphone", "Email", "Salaire %", "Boutique"};
     private final List<Reparateur> rows = new ArrayList<>();
 
     @Override
@@ -29,7 +29,6 @@ public class ReparateurTableModel extends AbstractTableModel {
             case 4 -> r.getEmail();
             case 5 -> r.getSalairePourcentage();
             case 6 -> r.getBoutique() != null ? r.getBoutique().getNom() : "(aucune)";
-            case 7 -> r.getCompte() != null ? r.getCompte().getLogin() : "(non défini)";
             default -> "";
         };
     }

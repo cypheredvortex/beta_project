@@ -109,20 +109,25 @@ public class CaisseDaoImpl implements CaisseDao {
         Caisse c = new Caisse();
         c.setId(rs.getLong("id"));
         c.setSoldeActuel(rs.getDouble("soldeActuel"));
+
         String typeStr = rs.getString("type");
-        if (typeStr != null) {
+        if (typeStr != null && !typeStr.isBlank()) {
             try {
-                c.setType(TypeCaisse.valueOf(typeStr));
+                c.setType(TypeCaisse.valueOf(typeStr.toUpperCase())); // ✅ safer
             } catch (IllegalArgumentException e) {
+                System.err.println("⚠️ Invalid type value in DB: " + typeStr);
                 c.setType(null);
             }
         }
+
         long repId = rs.getLong("reparateur_id");
         if (!rs.wasNull()) {
             Reparateur r = new Reparateur();
             r.setId(repId);
             c.setReparateur(r);
         }
+
         return c;
     }
+
 }

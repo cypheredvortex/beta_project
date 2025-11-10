@@ -1,49 +1,69 @@
 package presentation.proprietaire.view;
 
 import metier.model.Compte;
+import metier.services.IBoutiqueService;
+import metier.services.IReparateurService;
+import metier.services.IReparationService;
+import metier.servicesImpl.BoutiqueServiceImpl;
+import metier.servicesImpl.ReparateurServiceImpl;
+import metier.servicesImpl.ReparationServiceImpl;
 import presentation.proprietaire.controller.CaisseGlobaleController;
-import presentation.proprietaire.model.BoutiqueTableModel;
-import presentation.proprietaire.model.CaisseTableModel;
-import presentation.proprietaire.model.ReparateurTableModel;
-import presentation.proprietaire.model.ReparationTableModel;
-
+import presentation.proprietaire.controller.GestionBoutiqueController;
+import presentation.proprietaire.controller.GestionReparateursController;
+import presentation.proprietaire.controller.ListeReparationsController;
+import presentation.proprietaire.model.*;
 import javax.swing.*;
 import java.awt.*;
 
 public class DashboardProprietaireFrame extends JFrame {
+
     private final CardLayout card = new CardLayout();
     private final JPanel root = new JPanel(card);
 
     public DashboardProprietaireFrame(Compte compte) {
         super("Dashboard Propriétaire - " + compte.getLogin());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1100, 700);
+        setSize(1150, 700);
         setLocationRelativeTo(null);
 
-        // === PANELS ===
+        // =====================================================
+        // 1️⃣ SERVICES
+        // =====================================================
+        IReparateurService reparateurService = new ReparateurServiceImpl();
+        IBoutiqueService boutiqueService = new BoutiqueServiceImpl();
+        IReparationService reparationService = new ReparationServiceImpl();
 
-        // 1️⃣ Réparateurs
+        // =====================================================
+        // 2️⃣ RÉPARATEURS
+        // =====================================================
         ReparateurTableModel reparateurTableModel = new ReparateurTableModel();
         GestionReparateursPanel gestionReparateurs = new GestionReparateursPanel(reparateurTableModel);
-        // TODO: attach controller if needed
+        new GestionReparateursController(gestionReparateurs, reparateurTableModel, reparateurService);
 
-        // 2️⃣ Boutique
+        // =====================================================
+        // 3️⃣ BOUTIQUE
+        // =====================================================
         BoutiqueTableModel boutiqueTableModel = new BoutiqueTableModel();
         GestionBoutiquePanel gestionBoutique = new GestionBoutiquePanel(boutiqueTableModel);
-        // TODO: attach controller if needed
+        new GestionBoutiqueController(gestionBoutique, boutiqueTableModel, boutiqueService);
 
-        // 3️⃣ Caisse
+        // =====================================================
+        // 4️⃣ CAISSE GLOBALE
+        // =====================================================
         CaisseTableModel caisseTableModel = new CaisseTableModel();
         CaisseGlobalePanel caisseGlobalePanel = new CaisseGlobalePanel(caisseTableModel);
-        // Attach controller
         new CaisseGlobaleController(caisseGlobalePanel, caisseTableModel);
 
-        // 4️⃣ Réparations
+        // =====================================================
+        // 5️⃣ RÉPARATIONS
+        // =====================================================
         ReparationTableModel reparationTableModel = new ReparationTableModel();
         ListeReparationsPanel listeReparations = new ListeReparationsPanel(reparationTableModel);
-        // TODO: attach controller if needed
+        new ListeReparationsController(listeReparations, reparationTableModel, reparationService); // 🔥 Contrôleur connecté
 
-        // === MENU ===
+        // =====================================================
+        // 🧭 MENU LATÉRAL
+        // =====================================================
         String[] options = {"Réparateurs", "Boutique", "Caisse", "Réparations"};
         JList<String> menu = new JList<>(options);
         menu.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -60,22 +80,27 @@ public class DashboardProprietaireFrame extends JFrame {
             }
         });
 
-        // === ADD PANELS TO ROOT ===
+        // =====================================================
+        // 🧩 PANELS PRINCIPAUX
+        // =====================================================
         root.add(gestionReparateurs, "reparateurs");
         root.add(gestionBoutique, "boutique");
         root.add(caisseGlobalePanel, "caisse");
         root.add(listeReparations, "reparations");
 
-        // === LAYOUT ===
+        // =====================================================
+        // ⚙️ LAYOUT GLOBAL
+        // =====================================================
         getContentPane().setLayout(new BorderLayout());
         JScrollPane left = new JScrollPane(menu);
         left.setPreferredSize(new Dimension(200, 0));
         getContentPane().add(left, BorderLayout.WEST);
         getContentPane().add(root, BorderLayout.CENTER);
 
-        // Show default
+        // =====================================================
+        // 🎬 AFFICHAGE PAR DÉFAUT
+        // =====================================================
         card.show(root, "reparateurs");
-
         setVisible(true);
     }
 }

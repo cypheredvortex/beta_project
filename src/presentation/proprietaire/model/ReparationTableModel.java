@@ -11,7 +11,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReparationTableModel extends AbstractTableModel {
-    private final String[] columns = {"ID", "Client", "Appareils", "État", "Date création", "Code unique", "Prix total"};
+    private final String[] columns = {
+        "ID", "Client", "Réparateur", "Appareils", "État", 
+        "Date création", "Code unique", "Description", 
+        "Prix convenu", "Prix pièces", "Prix total", "Remarques"
+    };
+
     private final List<Reparation> rows = new ArrayList<>();
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -36,13 +41,25 @@ public class ReparationTableModel extends AbstractTableModel {
         return switch (columnIndex) {
             case 0 -> r.getId();
             case 1 -> r.getClient() == null ? "" : r.getClient().getNom() + " " + r.getClient().getPrenom();
-            case 2 -> r.getAppareils() == null ? "" : r.getAppareils().stream()
-                        .map(Appareil::getMarque)
-                        .collect(Collectors.joining(", "));
-            case 3 -> r.getStatut() == null ? "" : r.getStatut();
-            case 4 -> r.getDateCreation() == null ? "" : sdf.format(r.getDateCreation());
-            case 5 -> r.getCodeUnique();
-            case 6 -> r.getPrixConvenu() + r.getPrixTotalPieces();
+            case 2 -> r.getReparateur() == null ? "" : r.getReparateur().getNom() + " " + r.getReparateur().getPrenom();
+            case 3 -> r.getAppareils() == null ? "" :
+                r.getAppareils().stream()
+                    .map(a -> String.format("%s %s (%s) - %s - %s", 
+                        a.getMarque(),
+                        a.getModele(),
+                        a.getType(),
+                        a.getNumeroSerie(),
+                        a.getProbleme()
+                    ))
+                    .collect(Collectors.joining("\n"));
+            case 4 -> r.getStatut() == null ? "" : r.getStatut();
+            case 5 -> r.getDateCreation() == null ? "" : sdf.format(r.getDateCreation());
+            case 6 -> r.getCodeUnique();
+            case 7 -> r.getDescription() == null ? "" : r.getDescription();
+            case 8 -> r.getPrixConvenu();
+            case 9 -> r.getPrixTotalPieces();
+            case 10 -> r.getPrixConvenu() + r.getPrixTotalPieces();
+            case 11 -> r.getRemarques() == null ? "" : r.getRemarques();
             default -> "";
         };
     }

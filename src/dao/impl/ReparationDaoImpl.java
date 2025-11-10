@@ -162,15 +162,35 @@ public class ReparationDaoImpl implements ReparationDao {
         r.setPrixTotalPieces(rs.getDouble("prixTotalPieces"));
         r.setRemarques(rs.getString("remarques"));
 
+        // 🔹 Récupérer le client complet
         long clientId = rs.getLong("client_id");
         if (!rs.wasNull()) {
-            r.setClient(new Client());
-            r.getClient().setId(clientId);
+            try {
+                r.setClient(new dao.impl.ClientDaoImpl().findById((int) clientId).orElse(null));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
+        // 🔹 Récupérer le réparateur complet
         long reparateurId = rs.getLong("reparateur_id");
-        if (!rs.wasNull()) r.setReparateur(new Reparateur(reparateurId, statut, statut, statut, statut, reparateurId, null, null, null, null));
+        if (!rs.wasNull()) {
+            try {
+                Optional<Reparateur> repOpt = new metier.servicesImpl.ReparateurServiceImpl().trouverParId(reparateurId);
+                repOpt.ifPresent(r::setReparateur); // affecte le réparateur complet avec nom + prénom
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // 🔹 Récupérer la liste des appareils
+        try {
+            r.setAppareils(new dao.impl.AppareilDaoImpl().findByReparationId(r.getId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return r;
     }
+
 }
