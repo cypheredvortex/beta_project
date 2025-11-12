@@ -38,11 +38,23 @@ public class CaisseTableModel extends AbstractTableModel {
     public Object getValueAt(int row, int col) {
         Caisse c = data.get(row);
         switch (col) {
-            case 0: return c.getId();
-            case 1: return c.getSoldeActuel();
-            case 2: return c.getType() != null ? c.getType().name() : "";
-            case 3: return c.getReparateur() != null ? c.getReparateur().getNom() : "";
-            default: return "";
+            case 0:
+                return c.getId();
+            case 1:
+                return c.getSoldeActuel();
+            case 2:
+                return c.getType() != null ? c.getType().name() : "";
+            case 3:
+                if (c.getReparateur() != null) {
+                    String nom = c.getReparateur().getNom() != null ? c.getReparateur().getNom() : "";
+                    String prenom = c.getReparateur().getPrenom() != null ? c.getReparateur().getPrenom() : "";
+                    // Combine both with a space, cleanly
+                    return (nom + " " + prenom).trim();
+                } else {
+                    return "";
+                }
+            default:
+                return "";
         }
     }
 }

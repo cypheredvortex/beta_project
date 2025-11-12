@@ -201,20 +201,36 @@ public class GestionReparateursController {
     }
 
     private void rechercherReparateur() {
-        String query = view.getTxtRecherche().getText().trim();
-        if (query.isEmpty()) { loadData(); return; }
+        String query = view.getTxtRecherche().getText().trim().toLowerCase();
+        if (query.isEmpty()) {
+            loadData();
+            return;
+        }
 
         try {
-            List<Reparateur> result;
-            if (query.contains("@")) {
-                result = reparateurService.trouverParEmail(query).map(List::of).orElse(List.of());
-            } else if (query.matches("\\d+")) {
-                result = reparateurService.trouverParTelephone(query).map(List::of).orElse(List.of());
-            } else {
-                result = reparateurService.listerParNom(query);
+            List<Reparateur> all = reparateurService.listerReparateurs();
+            List<Reparateur> result = new java.util.ArrayList<>();
+
+            for (Reparateur r : all) {
+                String nom = r.getNom() != null ? r.getNom().toLowerCase() : "";
+                String prenom = r.getPrenom() != null ? r.getPrenom().toLowerCase() : "";
+                String fullName = (nom + " " + prenom).trim();
+
+                boolean match = false;
+
+                // Search by full name, partial name, email, or phone
+                if (fullName.contains(query) || prenom.contains(query) || nom.contains(query)) {
+                    match = true;
+                } else if (r.getEmail() != null && r.getEmail().toLowerCase().contains(query)) {
+                    match = true;
+                } else if (r.getTelephone() != null && r.getTelephone().toLowerCase().contains(query)) {
+                    match = true;
+                }
+
+                if (match) result.add(r);
             }
 
-            // 🔹 Fill the boutique object for search results
+            // 🔹 Ensure full boutique details
             for (Reparateur r : result) {
                 if (r.getBoutique() != null && r.getBoutique().getId() > 0) {
                     r.setBoutique(
@@ -225,11 +241,17 @@ public class GestionReparateursController {
             }
 
             model.setData(result);
+
+            if (result.isEmpty()) {
+                JOptionPane.showMessageDialog(view, "Aucun réparateur trouvé pour : " + query);
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(view, "Erreur lors de la recherche : " + ex.getMessage());
         }
     }
+
 
 
     // ------------------ Helpers ------------------
