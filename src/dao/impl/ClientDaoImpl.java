@@ -139,10 +139,16 @@ public class ClientDaoImpl implements ClientDao {
 
         long photoId = rs.getLong("photo_id");
         if (!rs.wasNull()) {
-            c.setPhoto(new metier.model.Photo());
-            c.getPhoto().setId(photoId);
+            try {
+                // Fetch the full Photo object from DB
+                PhotoDaoImpl photoDao = new PhotoDaoImpl();
+                c.setPhoto(photoDao.findById(photoId).orElse(null));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return c;
     }
+
 }

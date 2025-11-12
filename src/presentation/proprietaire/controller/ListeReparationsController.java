@@ -9,6 +9,7 @@ import presentation.proprietaire.view.ListeReparationsPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.List;
 
 public class ListeReparationsController {
@@ -81,23 +82,83 @@ public class ListeReparationsController {
 
     private void voirClient() {
         int row = view.getTable().getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(view, "Sélectionnez une réparation."); return; }
+        if (row < 0) { 
+            JOptionPane.showMessageDialog(view, "Sélectionnez une réparation."); 
+            return; 
+        }
+
         Client c = model.getAt(row).getClient();
-        if (c == null) { JOptionPane.showMessageDialog(view, "Aucun client associé."); return; }
+        if (c == null) { 
+            JOptionPane.showMessageDialog(view, "Aucun client associé."); 
+            return; 
+        }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("Nom: ").append(c.getNom()).append("\n")
-          .append("Prénom: ").append(c.getPrenom()).append("\n")
-          .append("Email: ").append(c.getEmail()).append("\n")
-          .append("Téléphone: ").append(c.getTelephone()).append("\n");
+        // --- Debug info ---
+        System.out.println("Client object: " + c);
+        System.out.println("Client photo object: " + c.getPhoto());
+        if (c.getPhoto() != null) {
+            System.out.println("Client photo path: " + c.getPhoto().getChemin());
+        }
 
-        JTextArea textArea = new JTextArea(sb.toString());
+        // --- Text panel ---
+        JTextArea textArea = new JTextArea(
+            "Nom: " + c.getNom() + "\n" +
+            "Prénom: " + c.getPrenom() + "\n" +
+            "Email: " + c.getEmail() + "\n" +
+            "Téléphone: " + c.getTelephone()
+        );
         textArea.setEditable(false);
-        JScrollPane scroll = new JScrollPane(textArea);
-        scroll.setPreferredSize(new Dimension(400, 250));
+        textArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        textArea.setBackground(Color.WHITE);
+        textArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JOptionPane.showMessageDialog(view, scroll, "Détails du client", JOptionPane.INFORMATION_MESSAGE);
+        JPanel textPanel = new JPanel(new BorderLayout());
+        textPanel.setBackground(Color.WHITE);
+        textPanel.add(textArea, BorderLayout.CENTER);
+
+        // --- Photo panel ---
+        JPanel photoPanel = new JPanel(new BorderLayout());
+        photoPanel.setBackground(Color.WHITE);
+
+        JLabel photoLabel;
+
+        if (c.getPhoto() != null && c.getPhoto().getChemin() != null && !c.getPhoto().getChemin().isEmpty()) {
+            File f = new File(c.getPhoto().getChemin());
+            if(f.exists()) {
+                ImageIcon icon = new ImageIcon(f.getAbsolutePath());
+                Image scaled = icon.getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+                photoLabel = new JLabel(new ImageIcon(scaled));
+                photoLabel.setBorder(BorderFactory.createTitledBorder("Photo du client"));
+            } else {
+                photoLabel = new JLabel("Photo introuvable");
+                photoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                photoLabel.setBorder(BorderFactory.createTitledBorder("Photo du client"));
+            }
+        } else {
+            photoLabel = new JLabel("Pas de photo");
+            photoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            photoLabel.setBorder(BorderFactory.createTitledBorder("Photo du client"));
+        }
+
+        photoLabel.setPreferredSize(new Dimension(160,160));
+        photoPanel.add(photoLabel, BorderLayout.CENTER);
+
+        // --- Main panel (horizontal layout) ---
+        JPanel mainPanel = new JPanel();
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        mainPanel.add(textPanel);
+        mainPanel.add(Box.createRigidArea(new Dimension(15,0)));
+        mainPanel.add(photoPanel);
+        mainPanel.setPreferredSize(new Dimension(500, 200));
+
+        JOptionPane.showMessageDialog(view, mainPanel, "Détails du client", JOptionPane.INFORMATION_MESSAGE);
     }
+
+
+
+
+
 
     private void voirReparateur() {
         int row = view.getTable().getSelectedRow();
